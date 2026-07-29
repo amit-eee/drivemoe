@@ -12,7 +12,7 @@ SCENARIO_LABEL_DIR=data/scenario_labels # Directory containing scenario labels
 
 # Temporal Configuration
 WINDOW_SIZE=5                 # Number of historical frames/observations used as input context
-HORIZON_SIZE=10               # Number of future trajectory points to predict
+HORIZON_SIZE=20               # Number of future trajectory points to predict
 
 # Important Note on HORIZON_SIZE:
 # --------------------------------------
