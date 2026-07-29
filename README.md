@@ -36,7 +36,8 @@ Please download the following components to their respective directories:
 ### 2.Preprocessing
 After organizing the files, run the preprocessing script to prepare the training data:
 ```bash
-bash script/generate_data.sh
+mkdir -p logs
+bash script/generate_data.sh 2>&1 | tee logs/preprocess_$(date +%Y%m%d_%H%M%S).log
 ```
 For OPEN-LOOP evaluation (testing with ground truth history), you must be set HORIZON_SIZE to 20 to ensure fair comparison with baseline methods. For CLOSED-LOOP evaluation (testing with predicted history), it can be set to any value based on your requirements. 
 
