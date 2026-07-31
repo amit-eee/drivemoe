@@ -37,7 +37,7 @@ Please download the following components to their respective directories:
 After organizing the files, run the preprocessing script to prepare the training data:
 ```bash
 mkdir -p logs
-bash script/generate_data.sh 2>&1 | tee logs/preprocess_$(date +%Y%m%d_%H%M%S).log
+bash scripts/generate_data.sh 2>&1 | tee logs/preprocess_$(date +%Y%m%d_%H%M%S).log
 ```
 For OPEN-LOOP evaluation (testing with ground truth history), you must be set HORIZON_SIZE to 20 to ensure fair comparison with baseline methods. For CLOSED-LOOP evaluation (testing with predicted history), it can be set to any value based on your requirements. 
 
@@ -48,9 +48,9 @@ For OPEN-LOOP evaluation (testing with ground truth history), you must be set HO
 ### Start Training
 Launch the training process using the provided script:
 ```bash
-bash script/training/train_drivepi0_closed_loop.sh          # train drivepi0
-bash script/training/train_drivemoe_stage1_closed_loop.sh   # train drivemoe stage1
-bash script/training/train_drivemoe_stage2_closed_loop.sh   # train drivemoe stage2
+bash scripts/training/train_drivepi0_closed_loop.sh          # train drivepi0
+bash scripts/training/train_drivemoe_stage1_closed_loop.sh   # train drivemoe stage1
+bash scripts/training/train_drivemoe_stage2_closed_loop.sh   # train drivemoe stage2
 ```
 
 ### Evaluation

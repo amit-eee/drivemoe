@@ -3,18 +3,18 @@ defaults:
 hydra:
   run:
     dir: ${log_dir}
-_target_: src.agent.drivemoe.train.DriveMoETrainAgent
+_target_: src.agent.drivepi0.train.DrivePiZeroTrainAgent
 
 log_dir: log/train/${name}/${now:%Y-%m-%d}_${now:%H-%M}_${seed}
-name: drivemoe_stage2
+name: drive-pi0
 device: cuda
 n_nodes: 1
 seed: 42
 pretrained_model_path: ckpts/paligemma-3b-pt-224
+load_pretrained_weights: True
 resume_checkpoint_path:
-ckpt_path: "YOUR_STAGE1_MODEL_CKPT"   # You need to set path here!
 train_vlm: True
-action_expert_adaptive_mode:
+action_expert_adaptive_mode:  # adaLN, adaLN-Zero, or None
 use_torch_compile: True
 use_bf16: True
 use_amp: True
@@ -28,43 +28,43 @@ data:
     statistics_path: config/statistics/b2d_statistics.json
     work_dir: exp/b2d_action
     split: train
-    return_camera_id: True
-    return_scenario_id: True
-    is_drivemoe: True
+    return_camera_id: False
+    return_scenario_id: False
+    is_drivemoe: False
     set_scene_priority: False
   val:
     statistics_path: config/statistics/b2d_statistics.json
     work_dir: exp/b2d_action
     split: val
-    return_camera_id: True
-    return_scenario_id: True
-    is_drivemoe: True
+    return_camera_id: False
+    return_scenario_id: False
+    is_drivemoe: False
     set_scene_priority: False
 
 wandb:
   entity: ${oc.env:WANDB_ENTITY}
-  project: ${oc.env:WANDB_PROJECT}_stage2
+  project: ${oc.env:WANDB_PROJECT}_drivepi0
   run: ${now:%H-%M-%S}_${name}
 
 log_freq: 16
-n_epochs: 6
+n_epochs: 12
 n_updates: ${eval:'225348 // ${global_batch_size} * ${n_epochs}'}
 save_model_freq: ${eval:'225348 // ${global_batch_size} * 1'}
 eval_freq: 2000
 eval_size: 1024
 eval_thresholds: [0.05, 0.1, 0.2, 0.3, 0.5]
 
-global_batch_size: 128
+global_batch_size: 1024
 per_device_batch_size: 8
 num_workers: 8
-action_lr: 5e-6
-vlm_lr: 5e-6
+action_lr: 5e-5
+vlm_lr: 5e-5
 action_lr_scheduler:
-  first_cycle_steps: 22500
+  first_cycle_steps: 10000000
   min_lr: 1e-8
   warmup_steps: 200
 vlm_lr_scheduler:
-  first_cycle_steps: 22500
+  first_cycle_steps: 10000000
   min_lr: 1e-8
   warmup_steps: 200
 action_weight_decay: 0
@@ -75,37 +75,27 @@ flow_sampling: beta
 num_inference_steps: 10
 final_action_clip_value: 1.0
 
-criterion:
-  _target_: src.model.DriveMoE.loss.CombinedLoss
-  camera_router_weight: 5.0
-  action_router_weight: 5.0
-  action_weight: 1.0
-  gamma: 2.0  # used for Focal Loss
-
 cond_steps: 5
 horizon_steps: 20
 action_dim: 2
 proprio_dim: 10
-max_seq_len: 788
+max_seq_len: 532  # fixed 512 for image + max 20 for text
 tokenizer_padding: max_length
 max_image_text_tokens: ${max_seq_len}
-num_camera_views_selected: 5
-num_scenario_selected: 7
-stage: 2
 
 mixture:
-  vlm:
+  vlm:   # gemma
     hidden_size: 2048
     intermediate_size: 16384
     use_final_norm: False
     cache: True
     use_quantize: ${quantize}
     use_lora: ${lora}
-    adaptive_mode:
+    adaptive_mode:  # not applicable for gemma
   proprio:
     hidden_size: 1024
     intermediate_size: 4096
-    use_final_norm: True
+    use_final_norm: True  # technically no, but sharing weights with action anyway
     cache: True
     use_quantize: False
     use_lora: False
@@ -118,7 +108,7 @@ mixture:
     use_quantize: False
     use_lora: False
     adaptive_mode: ${action_expert_adaptive_mode}
-time_hidden_size: 256
+time_hidden_size: 256 # only applicable if using adaptive
 
 image_token_index: 257152
 vocab_size: 257216
@@ -136,7 +126,7 @@ vision:
     patch_size: 14
     layer_norm_eps: 1e-6
     attention_dropout: 0.0
-    num_image_tokens: 768
+    num_image_tokens: 512
     lora:
       r: ${lora_r}
       dropout: ${lora_dropout}
@@ -156,7 +146,7 @@ vision_projector:
   use_lora: ${lora}
 
 joint:
-  _target_: src.model.DriveMoE.joint_model.JointModel
+  _target_: src.model.DrivePi0.joint_model.JointModel
   config:
     action_expert_adaptive_mode: ${action_expert_adaptive_mode}
     time_hidden_size: ${time_hidden_size}
@@ -174,7 +164,3 @@ joint:
     attention_bias: False
     attention_dropout: 0.0
     pad_token_id: ${pad_token_id}
-    num_moe_layers: 4
-    num_shared_experts: 1
-    num_skill_experts: ${num_scenario_selected}
-    num_experts_per_tok: 3

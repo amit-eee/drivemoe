@@ -43,7 +43,7 @@ data:
 
 wandb:
   entity: ${oc.env:WANDB_ENTITY}
-  project: drivemoe_stage1
+  project: ${oc.env:WANDB_PROJECT}_stage1
   run: ${now:%H-%M-%S}_${name}
 
 log_freq: 16
@@ -83,7 +83,7 @@ criterion:
   gamma: 2.0  # used for Focal Loss
 
 cond_steps: 5
-horizon_steps: 10
+horizon_steps: 20
 action_dim: 2
 proprio_dim: 10
 max_seq_len: 788

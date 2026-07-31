@@ -32,9 +32,13 @@ class DrivePiZeroTrainAgent:
         torch.manual_seed(self.seed)
 
         # devices
-        self.gpu_id = cfg.gpu_id
+        if "LOCAL_RANK" in os.environ:
+            self.gpu_id = int(os.environ["LOCAL_RANK"])
+            self.multi_gpu = int(os.environ.get("WORLD_SIZE", 1)) > 1
+        else:
+            self.gpu_id = cfg.gpu_id
+            self.multi_gpu = cfg.multi_gpu
         self.device = torch.device(f"cuda:{self.gpu_id}")
-        self.multi_gpu = cfg.multi_gpu
         world_size = 1  # single gpu
         if self.multi_gpu:
             global_rank = int(os.environ["RANK"])
@@ -49,7 +53,7 @@ class DrivePiZeroTrainAgent:
                 log.info(
                     f"Local rank: {local_rank}, GPU UUID: {torch.cuda.get_device_properties(i).uuid}"
                 )
-        self.main_rank = not self.multi_gpu or global_rank == 0
+        self.main_rank = not self.multi_gpu or int(os.environ.get("RANK", 0)) == 0
 
         # logging
         self.save_model_freq = int(cfg.save_model_freq)

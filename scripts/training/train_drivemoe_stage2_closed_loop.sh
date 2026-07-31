@@ -6,7 +6,8 @@ NUM_GPU="$(nvidia-smi --list-gpus | wc -l)"
 echo "NUM_GPU=$NUM_GPU"
 
 export PYTHONPATH="${PWD}"
-export WANDB_ENTITY="YOUR_WANDB_ENTITY" # You need to set wandb
+export WANDB_ENTITY="amiteee12"
+export WANDB_PROJECT="drivemoe"
 
 HYDRA_FULL_ERROR=1 torchrun \
   --nproc_per_node=$NUM_GPU \
