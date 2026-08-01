@@ -16,7 +16,12 @@
 # Experiment outputs and logs
 /exp/
 /logs/
+/log/
 /wandb/
+/wandb_logs/
+/wandb_temp/
+wandb-summary.json
+wandb-metadata.json
 /visualize/*
 *.log
 *.bak
