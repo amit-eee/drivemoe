@@ -39,6 +39,18 @@ echo ""
 export PYTHONPATH="${PWD}"
 export WANDB_ENTITY="amiteee12"
 export WANDB_PROJECT="drivemoe"
+export WANDB_MODE=online
+
+export WANDB_DIR=/data2/mah20012/drivemoe/wandb_logs
+export RAY_TMPDIR=/data2/mah20012/drivemoe/ray_tmp
+export TMPDIR=/data2/mah20012/tmp
+mkdir -p $WANDB_DIR $RAY_TMPDIR $TMPDIR
+
+echo "=== WANDB env check ==="
+echo "WANDB_MODE=$WANDB_MODE"
+echo "WANDB_DIR=$WANDB_DIR"
+echo "WANDB_ENTITY=$WANDB_ENTITY"
+echo "WANDB_PROJECT=$WANDB_PROJECT"
 
 # ============================================
 # Training

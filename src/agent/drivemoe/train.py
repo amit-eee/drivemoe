@@ -96,7 +96,6 @@ class DriveMoETrainAgent:
                 entity=cfg.wandb.entity,
                 project=cfg.wandb.project,
                 name=self.run_name if hasattr(self, "run_name") else cfg.wandb.run,
-                mode="offline",
                 config=OmegaConf.to_container(cfg, resolve=True),
                 id=self.wandb_id if hasattr(self, "wandb_id") else None,
                 resume="allow",

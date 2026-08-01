@@ -94,7 +94,6 @@ class DrivePiZeroTrainAgent:
                 entity=cfg.wandb.entity,
                 project=cfg.wandb.project,
                 name=cfg.wandb.run,
-                mode="offline",
                 config=OmegaConf.to_container(cfg, resolve=True),
                 id=self.wandb_id if hasattr(self, "wandb_id") else None,
                 resume="allow",  # not using resume_from
