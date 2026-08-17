@@ -24,6 +24,7 @@ data:
   work_dir: exp/b2d_action
   split: val
   return_camera_id: False
+  return_scenario_id: True
   is_drivemoe: False
   set_scene_priority: False
 

@@ -16,7 +16,7 @@ class Bench2DriveDataset:
             work_dir=config.work_dir,
             statistics_path=config.statistics_path,
             return_camera_id=config.return_camera_id,
-            return_scenario_id=config.return_scenario_id,
+            return_scenario_id=config.get("return_scenario_id", False),
             split=config.split,
             is_drivemoe=config.is_drivemoe,
             scene_priority=SCENE_PRIORITOY if config.set_scene_priority else None,

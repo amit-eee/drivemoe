@@ -9,10 +9,10 @@ lora: False
 lora_r: 32
 lora_dropout: 0.0
 pretrained_model_path: ${oc.env:DRIVEMOE_REPO_DIR}/ckpts/paligemma-3b-pt-224
-checkpoint_path: "YOUR_CHECKPOINT_PATH"  # You need to set path
+checkpoint_path: /home/mah20012/drivemoe/log/train/drive-pi0/2026-07-31_19-31_42/checkpoint/step2640.pt
 
 data:
-  statistics_path: ${oc.env:REPO_DIR}/config/statistics/b2d_statistics.json
+  statistics_path: ${oc.env:DRIVEMOE_REPO_DIR}/config/statistics/b2d_statistics.json
 
 flow_sampling: beta
 num_inference_steps: 10
@@ -21,7 +21,7 @@ debug: False
 save_images: False
 
 cond_steps: 5
-horizon_steps: 10
+horizon_steps: 20
 action_dim: 2
 proprio_dim: 10
 max_seq_len: 532
